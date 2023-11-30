@@ -36,6 +36,7 @@ class DenseEncoder(tf.keras.layers.Layer):
             self.out_act = tf.keras.layers.Dense(layer_dims[-1])
 
     def call(self, x):
+        print(x.shape)
         x = self.in_block(x)
         print('Output first layer' + str(x.shape))
         for block in self.body_blocks:
