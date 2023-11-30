@@ -3,7 +3,6 @@ from tensorflow.keras import layers
 print(tf.__version__)
 import os
 import numpy as np
-import cv2
 from model import GANomaly
 import pandas as pd
 import os
