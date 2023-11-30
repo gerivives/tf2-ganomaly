@@ -133,6 +133,7 @@ def main():
     # evaluating
     ganomaly.evaluate_best(test_dataset)
 
+'''
 def main(_):
     opt = FLAGS
     # logging
@@ -186,7 +187,7 @@ def main(_):
 
     # evaluating
     ganomaly.evaluate_best(test_dataset)
-
+'''
 
 if __name__ == '__main__':
     app.run(main)
