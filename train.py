@@ -36,7 +36,7 @@ flags.DEFINE_float("w_con", 50., "Reconstruction loss weight")
 flags.DEFINE_float("w_enc", 1., "Encoder loss weight")
 flags.DEFINE_float("beta1", 0.5, "beta1 for Adam optimizer")
 flags.DEFINE_string("dataset", None, "name of dataset")
-DATASETS = ['mnist', 'cifar10']
+DATASETS = ['mnist', 'cifar10', 'cic']
 flags.register_validator('dataset',
                          lambda name: name in DATASETS,
                          message='--dataset must be {}'.format(DATASETS))
@@ -45,11 +45,13 @@ flags.mark_flag_as_required('anomaly')
 flags.mark_flag_as_required('isize')
 flags.mark_flag_as_required('nc')
 
+'''
 def batch_resize(imgs, size: tuple):
     img_out = np.empty((imgs.shape[0], ) + size)
     for i in range(imgs.shape[0]):
         img_out[i] = cv2.resize(imgs[i], size, interpolation=cv2.INTER_CUBIC)
     return img_out
+'''
 
 def main(_):
     opt = FLAGS
