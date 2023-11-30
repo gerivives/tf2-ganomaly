@@ -50,7 +50,7 @@ def batch_resize(imgs, size: tuple):
         img_out[i] = cv2.resize(imgs[i], size, interpolation=cv2.INTER_CUBIC)
     return img_out
 
-def main():
+def main(_):
     opt = FLAGS
     # logging
     logging.set_verbosity(logging.INFO)
