@@ -7,6 +7,7 @@ from model import GANomaly
 import pandas as pd
 import os
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
 
 from absl import app
 from absl import flags
@@ -99,11 +100,10 @@ def main(_):
     X = frames.drop(label, axis=1)
     y = frames[label].to_frame()
 
-    features = X_train.columns.to_list()
+    features = X.columns.to_list()
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=4, stratify=y)
     scaler = MinMaxScaler()
     X_train[features] = scaler.fit_transform(X_train[features])
-    joblib.dump(scaler, MODEL_PATH + FILENAME + SCALER_SUF)
     X_test[features] = scaler.transform(X_test[features])
 
     indices_to_remove = y_train[y_train[label] == 'attack'].index
