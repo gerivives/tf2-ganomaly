@@ -37,10 +37,13 @@ class DenseEncoder(tf.keras.layers.Layer):
 
     def call(self, x):
         x = self.in_block(x)
+        print('Output first layer' + str(x.shape))
         for block in self.body_blocks:
             x = block(x)
+            print('Output from subsequent layers' + str(x.shape))
         last_features = x
         out = self.out_act(last_features)
+        print('Output from last layer Dense' + str(out.shape))
         if self.output_features:
             return out, last_features
         else:
@@ -108,7 +111,9 @@ class NetD(tf.keras.Model):
 
     def call(self, x):
         output, last_features = self.encoder(x)
+        print('Output from Encoder' + str(output.shape))
         output = self.sigmoid(output)
+        print('Output from Discriminator' + str(output.shape))
         return output, last_features
 
 
