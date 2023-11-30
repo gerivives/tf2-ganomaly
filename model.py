@@ -81,7 +81,7 @@ class NetG(tf.keras.Model):
         layers_dims = [256, 128, 64, 32, 20]
         # Use the dense encoder-decoder pair when the dimensions are given
         self.encoder1 = DenseEncoder(layer_dims=layers_dims)
-        self.decoder = DenseDecoder(opt.isize, layer_dims=reversed(layers_dims))
+        self.decoder = DenseDecoder(opt.isize, layer_dims=list(reversed(layers_dims)))
         self.encoder2 = DenseEncoder(layer_dims=layers_dims)
 
     def call(self, x):
