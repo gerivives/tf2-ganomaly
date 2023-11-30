@@ -51,7 +51,7 @@ class DenseEncoder(tf.keras.layers.Layer):
             return out
 
 class DenseDecoder(tf.keras.layers.Layer):
-    def __init__(self, isize, layer_dims, hidden_activation="selu", p_dropout=.2):
+    def __init__(self, isize, layer_dims, hidden_activation="relu", p_dropout=.2):
         """
         Params:
             isize(int): input size
@@ -312,10 +312,11 @@ class GANomaly(GANRunner):
         """ Autograph enabled by tf.function could speedup more than 6x than eager mode.
         """
         self.input = x
-        print(x.shape)
         with tf.GradientTape() as g_tape, tf.GradientTape() as d_tape:
             self.latent_i, self.gen_img, self.latent_o = self.G(self.input)
+            print('TRAIN_STEP_IN' + str(self.input.shape))
             self.pred_real, self.feat_real = self.D(self.input)
+            print('TRAIN_STEP_IN' + str(self.gen_img.shape))
             self.pred_fake, self.feat_fake = self.D(self.gen_img)
             g_loss = self.g_loss()
             d_loss = self.d_loss()
