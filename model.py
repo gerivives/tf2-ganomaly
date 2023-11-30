@@ -7,7 +7,7 @@ import metrics
 from absl import logging
 
 class DenseEncoder(tf.keras.layers.Layer):
-    def __init__(self, layer_dims, out_size=None, output_features=False, hidden_activation="selu", p_dropout=.2):
+    def __init__(self, layer_dims, out_size=None, output_features=False, hidden_activation="relu", p_dropout=.2):
         """
         Params:
             layer_dims(Tuple[int]): dense layer dimensions
@@ -78,11 +78,11 @@ class DenseDecoder(tf.keras.layers.Layer):
 class NetG(tf.keras.Model):
     def __init__(self, opt):
         super(NetG, self).__init__()
-
+        layers_dims = [256, 128, 64, 32, 20]
         # Use the dense encoder-decoder pair when the dimensions are given
-        self.encoder1 = DenseEncoder(opt.encdims)
-        self.decoder = DenseDecoder(opt.isize, tuple(reversed(opt.encdims[:-1])))
-        self.encoder2 = DenseEncoder(opt.encdims)
+        self.encoder1 = DenseEncoder(layer_dims=layers_dims)
+        self.decoder = DenseDecoder(opt.isize, layer_dims=reversed(layers_dims))
+        self.encoder2 = DenseEncoder(layer_dims=layers_dims)
 
     def call(self, x):
         latent_i = self.encoder1(x)

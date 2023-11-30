@@ -20,7 +20,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_integer("shuffle_buffer_size", 10000,
                      "buffer size for pseudo shuffle")
 flags.DEFINE_integer("batch_size", 300, "batch_size")
-flags.DEFINE_integer("isize", None, "input size")
+flags.DEFINE_integer("isize", 78, "input size")
 flags.DEFINE_string("ckpt_dir", 'ckpt', "checkpoint folder")
 flags.DEFINE_integer("nz", 100, "latent dims")
 flags.DEFINE_integer("nc", None, "input channels")
