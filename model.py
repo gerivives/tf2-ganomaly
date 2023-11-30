@@ -306,6 +306,7 @@ class GANomaly(GANRunner):
         """ Autograph enabled by tf.function could speedup more than 6x than eager mode.
         """
         self.input = x
+        print(X.shape)
         with tf.GradientTape() as g_tape, tf.GradientTape() as d_tape:
             self.latent_i, self.gen_img, self.latent_o = self.G(self.input)
             self.pred_real, self.feat_real = self.D(self.input)
