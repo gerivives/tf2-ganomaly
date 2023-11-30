@@ -6,119 +6,6 @@ from tensorflow.keras import layers
 import metrics
 from absl import logging
 
-
-class Conv_BN_Act(tf.keras.layers.Layer):
-    def __init__(self,
-                 filters,
-                 ks,
-                 act_type,
-                 is_bn=True,
-                 padding='same',
-                 strides=1,
-                 conv_tran=False):
-        super(Conv_BN_Act, self).__init__()
-        if conv_tran:
-            self.conv = layers.Conv2DTranspose(filters,
-                                               ks,
-                                               strides=strides,
-                                               padding=padding,
-                                               use_bias=False)
-        else:
-            self.conv = layers.Conv2D(filters,
-                                      ks,
-                                      strides=strides,
-                                      padding=padding,
-                                      use_bias=False)
-
-        self.is_bn = is_bn
-        if is_bn:
-            self.bn = layers.BatchNormalization(epsilon=1e-05, momentum=0.9)
-
-        if act_type == 'LeakyReLU':
-            self.act = layers.LeakyReLU(alpha=0.2)
-            self.erase_act = False
-        elif act_type == 'ReLU':
-            self.act = layers.ReLU()
-            self.erase_act = False
-        elif act_type == 'Tanh':
-            self.act = layers.Activation(tf.tanh)
-            self.erase_act = False
-        elif act_type == '':
-            self.erase_act = True
-        else:
-            raise ValueError
-
-    def call(self, x):
-        x = self.conv(x)
-        x = self.bn(x) if self.is_bn else x
-        x = x if self.erase_act else self.act(x)
-        return x
-
-
-class Encoder(tf.keras.layers.Layer):
-    """ DCGAN ENCODER NETWORK
-    """
-    def __init__(self,
-                 isize,
-                 nz,
-                 nc,
-                 ndf,
-                 n_extra_layers=0,
-                 output_features=False):
-        """
-        Params:
-            isize(int): input image size
-            nz(int): num of latent dims
-            nc(int): num of input dims
-            ndf(int): num of discriminator(Encoder) filters
-        """
-        super(Encoder, self).__init__()
-        assert isize % 16 == 0, "isize has to be a multiple of 16"
-
-        self.in_block = Conv_BN_Act(filters=ndf,
-                                    ks=4,
-                                    act_type='LeakyReLU',
-                                    is_bn=False,
-                                    strides=2)
-        csize, cndf = isize / 2, ndf
-
-        self.extra_blocks = []
-        for t in range(n_extra_layers):
-            extra = Conv_BN_Act(filters=cndf, ks=3, act_type='LeakyReLU')
-            self.extra_blocks.append(extra)
-
-        self.body_blocks = []
-        while csize > 4:
-            in_feat = cndf
-            out_feat = cndf * 2
-            body = Conv_BN_Act(filters=out_feat,
-                               ks=4,
-                               act_type='LeakyReLU',
-                               strides=2)
-            self.body_blocks.append(body)
-            cndf = cndf * 2
-            csize = csize / 2
-
-        # state size. K x 4 x 4
-        self.output_features = output_features
-        self.out_conv = layers.Conv2D(filters=nz,
-                                      kernel_size=4,
-                                      padding='valid')
-
-    def call(self, x):
-        x = self.in_block(x)
-        for block in self.extra_blocks:
-            x = block(x)
-        for block in self.body_blocks:
-            x = block(x)
-        last_features = x
-        out = self.out_conv(last_features)
-        if self.output_features:
-            return out, last_features
-        else:
-            return out
-
-
 class DenseEncoder(tf.keras.layers.Layer):
     def __init__(self, layer_dims, out_size=None, output_features=False, hidden_activation="selu", p_dropout=.2):
         """
@@ -159,67 +46,6 @@ class DenseEncoder(tf.keras.layers.Layer):
         else:
             return out
 
-
-class Decoder(tf.keras.layers.Layer):
-    def __init__(self, isize, nz, nc, ngf, n_extra_layers=0):
-        """
-        Params:
-            isize(int): input image size
-            nz(int): num of latent dims
-            nc(int): num of input dims
-            ngf(int): num of Generator(Decoder) filters
-        """
-        super(Decoder, self).__init__()
-        assert isize % 16 == 0, "isize has to be a multiple of 16"
-        cngf, tisize = ngf // 2, 4
-        while tisize != isize:
-            cngf = cngf * 2
-            tisize = tisize * 2
-
-        self.in_block = Conv_BN_Act(filters=cngf,
-                                    ks=4,
-                                    act_type='ReLU',
-                                    padding='valid',
-                                    conv_tran=True)
-
-        csize, _ = 4, cngf
-        self.body_blocks = []
-        while csize < isize // 2:
-            body = Conv_BN_Act(filters=cngf // 2,
-                               ks=4,
-                               act_type='ReLU',
-                               strides=2,
-                               conv_tran=True)
-            self.body_blocks.append(body)
-            cngf = cngf // 2
-            csize = csize * 2
-
-        # Extra layers
-        self.extra_blocks = []
-        for t in range(n_extra_layers):
-            extra = Conv_BN_Act(filters=cngf,
-                                ks=3,
-                                act_type='ReLU',
-                                conv_tran=True)
-            self.extra_blocks.append(extra)
-
-        self.out_block = Conv_BN_Act(filters=nc,
-                                     ks=4,
-                                     act_type='Tanh',
-                                     strides=2,
-                                     is_bn=False,
-                                     conv_tran=True)
-
-    def call(self, x):
-        x = self.in_block(x)
-        for block in self.body_blocks:
-            x = block(x)
-        for block in self.extra_blocks:
-            x = block(x)
-        x = self.out_block(x)
-        return x
-
-
 class DenseDecoder(tf.keras.layers.Layer):
     def __init__(self, isize, layer_dims, hidden_activation="selu", p_dropout=.2):
         """
@@ -254,14 +80,9 @@ class NetG(tf.keras.Model):
         super(NetG, self).__init__()
 
         # Use the dense encoder-decoder pair when the dimensions are given
-        if opt.encdims:
-            self.encoder1 = DenseEncoder(opt.encdims)
-            self.decoder = DenseDecoder(opt.isize, tuple(reversed(opt.encdims[:-1])))
-            self.encoder2 = DenseEncoder(opt.encdims)
-        else:
-            self.encoder1 = Encoder(opt.isize, opt.nz, opt.nc, opt.ngf, opt.extralayers)
-            self.decoder = Decoder(opt.isize, opt.nz, opt.nc, opt.ngf, opt.extralayers)
-            self.encoder2 = Encoder(opt.isize, opt.nz, opt.nc, opt.ngf, opt.extralayers)
+        self.encoder1 = DenseEncoder(opt.encdims)
+        self.decoder = DenseDecoder(opt.isize, tuple(reversed(opt.encdims[:-1])))
+        self.encoder2 = DenseEncoder(opt.encdims)
 
     def call(self, x):
         latent_i = self.encoder1(x)
@@ -281,11 +102,7 @@ class NetD(tf.keras.Model):
         super(NetD, self).__init__()
 
         # Use the dense encoder when the dimensions are given
-        if opt.encdims:
-            self.encoder = DenseEncoder(opt.encdims, out_size=1, output_features=True)
-        else:
-            self.encoder = Encoder(opt.isize, 1, opt.nc, opt.ngf, opt.extralayers, output_features=True)
-
+        self.encoder = DenseEncoder(opt.encdims, out_size=1, output_features=True)
         self.sigmoid = layers.Activation(tf.sigmoid)
 
     def call(self, x):
