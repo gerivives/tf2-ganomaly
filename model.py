@@ -104,7 +104,7 @@ class NetD(tf.keras.Model):
     """
     def __init__(self, opt):
         super(NetD, self).__init__()
-        layer_dims = [256, 128, 64, 32, 20]
+        layer_dims = [256, 128, 64, 32, 16]
 
         # Use the dense encoder when the dimensions are given
         self.encoder = DenseEncoder(layer_dims=layer_dims, out_size=1, output_features=True)
@@ -238,6 +238,7 @@ class GANomaly(GANRunner):
                                        train_dataset=train_dataset,
                                        valid_dataset=valid_dataset,
                                        test_dataset=test_dataset)
+        # TODO: potential issue found here regarding the shape of the Layers
         self.D(tf.keras.Input(shape=[opt.isize] if opt.encdims else [opt.isize, opt.isize, opt.nc]))
         self.D_init_w_path = '/tmp/D_init'
         self.D.save_weights(self.D_init_w_path)
