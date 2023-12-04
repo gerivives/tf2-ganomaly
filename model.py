@@ -239,7 +239,8 @@ class GANomaly(GANRunner):
                                        valid_dataset=valid_dataset,
                                        test_dataset=test_dataset)
         # TODO: potential issue found here regarding the shape of the Layers
-        self.D(tf.keras.Input(shape=[opt.isize] if opt.encdims else [opt.isize, opt.isize, opt.nc]))
+        # Before we had this         self.D(tf.keras.Input(shape=[opt.isize] if opt.encdims else [opt.isize, opt.isize, opt.nc]))
+        self.D(tf.keras.Input(shape=[opt.isize]))
         self.D_init_w_path = '/tmp/D_init'
         self.D.save_weights(self.D_init_w_path)
 
