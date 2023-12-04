@@ -314,10 +314,11 @@ class GANomaly(GANRunner):
         """
         self.input = x
         with tf.GradientTape() as g_tape, tf.GradientTape() as d_tape:
+            print('Generator: next')
             self.latent_i, self.gen_img, self.latent_o = self.G(self.input)
-            print('TRAIN_STEP_IN' + str(self.input.shape))
+            print('Discriminator: next checking real. Shape data: ' + str(self.input.shape))
             self.pred_real, self.feat_real = self.D(self.input)
-            print('TRAIN_STEP_IN' + str(self.gen_img.shape))
+            print('Discriminator: next checking generated (fake). Shape data: ' + str(self.gen_img.shape))
             self.pred_fake, self.feat_fake = self.D(self.gen_img)
             g_loss = self.g_loss()
             d_loss = self.d_loss()
