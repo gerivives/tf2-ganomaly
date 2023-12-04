@@ -38,13 +38,10 @@ class DenseEncoder(tf.keras.layers.Layer):
     def call(self, x):
         print(x.shape)
         x = self.in_block(x)
-        print('Output first layer' + str(x.shape))
         for block in self.body_blocks:
             x = block(x)
-            print('Output from subsequent layers' + str(x.shape))
         last_features = x
         out = self.out_act(last_features)
-        print('Output from last layer Dense' + str(out.shape))
         if self.output_features:
             return out, last_features
         else:
@@ -90,8 +87,11 @@ class NetG(tf.keras.Model):
 
     def call(self, x):
         latent_i = self.encoder1(x)
+        print('Output from Generator (Encoder1): ' + str(latent_i.shape))
         gen_img = self.decoder(latent_i)
+        print('Output from Generator (Decoder): ' + str(gen_img.shape))
         latent_o = self.encoder2(gen_img)
+        print('Output from Generator (Encoder2): ' + str(latent_o.shape))
         return latent_i, gen_img, latent_o
 
     def num_params(self):
@@ -112,9 +112,9 @@ class NetD(tf.keras.Model):
 
     def call(self, x):
         output, last_features = self.encoder(x)
-        print('Output from Encoder' + str(output.shape))
+        print('Output from Discriminator (Encoder): ' + str(output.shape))
         output = self.sigmoid(output)
-        print('Output from Discriminator' + str(output.shape))
+        print('Output from Discriminator (Sigmoid): ' + str(output.shape))
         return output, last_features
 
 
