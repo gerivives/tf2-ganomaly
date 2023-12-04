@@ -166,6 +166,7 @@ class GANRunner:
             with tqdm(total=self.num_ele_train, leave=False) as pbar:
                 for step, (x_batch_train,
                            y_batch_train) in enumerate(self.train_dataset):
+                    print('Shape training data from csv: ' + str(x_batch_train.shape))
                     loss = self.train_step(x_batch_train, y_batch_train)
                     G_losses.append(loss[0].numpy())
                     D_losses.append(loss[1].numpy())
