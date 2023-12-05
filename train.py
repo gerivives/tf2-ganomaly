@@ -6,7 +6,7 @@ import numpy as np
 from model import GANomaly
 import pandas as pd
 import os
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, LabelBinarizer
 from sklearn.model_selection import train_test_split
 
 from absl import app
@@ -97,7 +97,9 @@ def main(_):
     frames.loc[:, label] = new_label
     classes_drop = ['dropped']
     frames = frames[~frames[label].isin(classes_drop)]
+    labels = sorted(frames[label].unique().tolist())
     print(frames[label].value_counts())
+    print(labels)
 
     X = frames.drop(label, axis=1)
     y = frames[label].to_frame()
@@ -118,6 +120,15 @@ def main(_):
     y_train_at = y_train.loc[indices_to_remove]
     X_train_at.reset_index(drop=True, inplace=True)
     y_train_at.reset_index(drop=True, inplace=True)
+
+    # Initialize the binarizer with the known classes
+
+    lb = LabelBinarizer()
+    lb.fit(labels)
+
+    # One-hot encode the test labels
+    y_train_be = lb.transform(y_train_be[label])
+    y_train_at = lb.transform(y_train_at[label])
 
     train_dataset = tf.data.Dataset.from_tensor_slices((X_train_be, y_train_be))
     test_dataset = tf.data.Dataset.from_tensor_slices((X_train_at, y_train_at))
