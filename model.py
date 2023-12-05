@@ -127,7 +127,7 @@ class GANRunner:
                  train_dataset,
                  valid_dataset=None,
                  test_dataset=None,
-                 save_path='ckpt/'):
+                 save_path='./results/'):
         self.G = G
         self.D = D
         self.train_dataset = train_dataset
