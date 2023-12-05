@@ -87,11 +87,11 @@ class NetG(tf.keras.Model):
 
     def call(self, x):
         latent_i = self.encoder1(x)
-        print('Output from Generator (Encoder1): ' + str(latent_i.shape))
+        # print('Output from Generator (Encoder1): ' + str(latent_i.shape))
         gen_img = self.decoder(latent_i)
-        print('Output from Generator (Decoder): ' + str(gen_img.shape))
+        # print('Output from Generator (Decoder): ' + str(gen_img.shape))
         latent_o = self.encoder2(gen_img)
-        print('Output from Generator (Encoder2): ' + str(latent_o.shape))
+        # print('Output from Generator (Encoder2): ' + str(latent_o.shape))
         return latent_i, gen_img, latent_o
 
     def num_params(self):
@@ -112,9 +112,9 @@ class NetD(tf.keras.Model):
 
     def call(self, x):
         output, last_features = self.encoder(x)
-        print('Output from Discriminator (Encoder): ' + str(output.shape))
+        # print('Output from Discriminator (Encoder): ' + str(output.shape))
         output = self.sigmoid(output)
-        print('Output from Discriminator (Sigmoid): ' + str(output.shape))
+        # print('Output from Discriminator (Sigmoid): ' + str(output.shape))
         return output, last_features
 
 
@@ -316,11 +316,11 @@ class GANomaly(GANRunner):
         """
         self.input = x
         with tf.GradientTape() as g_tape, tf.GradientTape() as d_tape:
-            print('Generator: next. Shape data: ' + str(self.input.shape))
+            # print('Generator: next. Shape data: ' + str(self.input.shape))
             self.latent_i, self.gen_img, self.latent_o = self.G(self.input)
-            print('Discriminator: next checking real. Shape data: ' + str(self.input.shape))
+            # print('Discriminator: next checking real. Shape data: ' + str(self.input.shape))
             self.pred_real, self.feat_real = self.D(self.input)
-            print('Discriminator: next checking generated (fake). Shape data: ' + str(self.gen_img.shape))
+            # print('Discriminator: next checking generated (fake). Shape data: ' + str(self.gen_img.shape))
             self.pred_fake, self.feat_fake = self.D(self.gen_img)
             g_loss = self.g_loss()
             d_loss = self.d_loss()
