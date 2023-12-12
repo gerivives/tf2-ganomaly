@@ -110,12 +110,12 @@ def main(_):
     # Initialize the binarizer with the known classes
     lb = LabelBinarizer()
     lb.fit(labels)
-    print("Label for attack: " + str(y_train_at.loc[0][label]))
 
     # One-hot encode the test labels
     y_train_be = lb.transform(y_train_be[label])
     y_train_at = lb.transform(y_train_at[label])
     y_train_be_te = lb.transform(y_train_be_te[label])
+    print("Label for attack: " + str(y_train_at.loc[0][label]))
 
     train_dataset = tf.data.Dataset.from_tensor_slices((X_train_be, y_train_be))
     test_dataset = tf.data.Dataset.from_tensor_slices((X_train_at, y_train_at))
