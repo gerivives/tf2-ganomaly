@@ -112,6 +112,7 @@ def main(_):
     # Initialize the binarizer with the known classes
     lb = LabelBinarizer()
     lb.fit(labels)
+    print(lb.classes_)
 
     # One-hot encode the test labels
     y_train_be = lb.transform(y_train_be[label])
