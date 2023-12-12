@@ -22,8 +22,6 @@ flags.DEFINE_integer("shuffle_buffer_size", 10000,
 flags.DEFINE_integer("batch_size", 300, "batch_size")
 flags.DEFINE_integer("isize", 78, "input size")
 flags.DEFINE_string("ckpt_dir", 'ckpt', "checkpoint folder")
-flags.DEFINE_list("encdims", 20, "Layer dimensions of the encoder and in reverse of the decoder."
-                                   "If given, dense encoder and decoders are used.")
 flags.DEFINE_integer("niter", 8, "number of training epochs")
 flags.DEFINE_float("lr", 2e-4, "learning rate")
 flags.DEFINE_float("w_adv", 1., "Adversarial loss weight")
