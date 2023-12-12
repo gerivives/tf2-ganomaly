@@ -22,12 +22,7 @@ flags.DEFINE_integer("shuffle_buffer_size", 10000,
 flags.DEFINE_integer("batch_size", 300, "batch_size")
 flags.DEFINE_integer("isize", 78, "input size")
 flags.DEFINE_string("ckpt_dir", 'ckpt', "checkpoint folder")
-flags.DEFINE_integer("nz", 100, "latent dims")
-flags.DEFINE_integer("nc", None, "input channels")
-flags.DEFINE_integer("ndf", 64, "number of discriminator's filters")
-flags.DEFINE_integer("ngf", 64, "number of generator's filters")
-flags.DEFINE_integer("extralayers", 0, "extralayers for both G and D")
-flags.DEFINE_list("encdims", None, "Layer dimensions of the encoder and in reverse of the decoder."
+flags.DEFINE_list("encdims", 20, "Layer dimensions of the encoder and in reverse of the decoder."
                                    "If given, dense encoder and decoders are used.")
 flags.DEFINE_integer("niter", 8, "number of training epochs")
 flags.DEFINE_float("lr", 2e-4, "learning rate")
@@ -35,23 +30,14 @@ flags.DEFINE_float("w_adv", 1., "Adversarial loss weight")
 flags.DEFINE_float("w_con", 50., "Reconstruction loss weight")
 flags.DEFINE_float("w_enc", 1., "Encoder loss weight")
 flags.DEFINE_float("beta1", 0.5, "beta1 for Adam optimizer")
-flags.DEFINE_string("dataset", None, "name of dataset")
-DATASETS = ['mnist', 'cifar10', 'cic']
+flags.DEFINE_string("dataset", 'cic', "name of dataset")
+DATASETS = ['cic']
 flags.register_validator('dataset',
                          lambda name: name in DATASETS,
                          message='--dataset must be {}'.format(DATASETS))
-flags.DEFINE_integer("anomaly", None, "the anomaly idx")
+flags.DEFINE_integer("anomaly", 1, "the anomaly idx")
 flags.mark_flag_as_required('anomaly')
 flags.mark_flag_as_required('isize')
-flags.mark_flag_as_required('nc')
-
-'''
-def batch_resize(imgs, size: tuple):
-    img_out = np.empty((imgs.shape[0], ) + size)
-    for i in range(imgs.shape[0]):
-        img_out[i] = cv2.resize(imgs[i], size, interpolation=cv2.INTER_CUBIC)
-    return img_out
-'''
 
 def main(_):
     opt = FLAGS

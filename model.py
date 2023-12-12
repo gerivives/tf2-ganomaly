@@ -298,6 +298,7 @@ class GANomaly(GANRunner):
             for i, score in enumerate(an_scores):
                 print("Showing anomaly score//expected y for test dataset\n")
                 print("{}//{} - ".format(score, gt_labels[i]))
+
         # AUC
         auc_dict = metrics.roc_auc(gt_labels, an_scores)
         ret_dict.update(auc_dict)
