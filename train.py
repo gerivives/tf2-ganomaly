@@ -33,8 +33,6 @@ DATASETS = ['cic']
 flags.register_validator('dataset',
                          lambda name: name in DATASETS,
                          message='--dataset must be {}'.format(DATASETS))
-flags.DEFINE_integer("anomaly", 1, "the anomaly idx")
-flags.mark_flag_as_required('anomaly')
 flags.mark_flag_as_required('isize')
 
 def main(_):
