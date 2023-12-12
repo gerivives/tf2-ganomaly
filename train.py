@@ -120,25 +120,26 @@ def main(_):
     y_train_at = y_train.loc[indices_to_remove]
     X_train_at.reset_index(drop=True, inplace=True)
     y_train_at.reset_index(drop=True, inplace=True)
+    X_train_be_te = X_train_be.iloc[0:10001]
+    y_train_be_te = y_train_be.iloc[0:10001]
+    X_train_be_te.reset_index(drop=True, inplace=True)
+    y_train_be_te.reset_index(drop=True, inplace=True)
 
     # Initialize the binarizer with the known classes
-
     lb = LabelBinarizer()
     lb.fit(labels)
 
     # One-hot encode the test labels
     y_train_be = lb.transform(y_train_be[label])
     y_train_at = lb.transform(y_train_at[label])
+    y_train_be_te = lb.transform(y_train_be_te[label])
 
     train_dataset = tf.data.Dataset.from_tensor_slices((X_train_be, y_train_be))
     test_dataset = tf.data.Dataset.from_tensor_slices((X_train_at, y_train_at))
+    test_dataset_be = tf.data.Dataset.from_tensor_slices((X_train_be_te, y_train_be_te))
     train_dataset = train_dataset.shuffle(opt.shuffle_buffer_size).batch(
         opt.batch_size, drop_remainder=True)
     test_dataset = test_dataset.batch(opt.batch_size, drop_remainder=False)
-
-    X_train_be_te = X_train_be.iloc[0:10001]
-    y_train_be_te = y_train_be.iloc[0:10001]
-    test_dataset_be = tf.data.Dataset.from_tensor_slices((X_train_be_te, y_train_be_te))
     test_dataset_be = test_dataset_be.batch(opt.batch_size, drop_remainder=False)
 
     # training
