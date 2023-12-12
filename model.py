@@ -145,7 +145,7 @@ class GANRunner:
     def validate_step(self, x, y):
         raise NotImplementedError
 
-    def evaluate(self, x):
+    def evaluate(self, x, show):
         raise NotImplementedError
 
     def _get_num_element(self, dataset):
@@ -195,7 +195,7 @@ class GANRunner:
 
             # evaluate on test_dataset
             if self.test_dataset is not None:
-                dict_ = self.evaluate(self.test_dataset)
+                dict_ = self.evaluate(self.test_dataset, False)
                 log_str = '\t Testing:'
                 for k, v in dict_.items():
                     log_str = log_str + '   {}: {:.4f}'.format(k, v)
@@ -288,15 +288,16 @@ class GANomaly(GANRunner):
         gt_labels = np.concatenate(gt_labels, axis=0).reshape([-1])
         return an_scores, gt_labels
 
-    def evaluate(self, test_dataset):
+    def evaluate(self, test_dataset, show):
         ret_dict = {}
         an_scores, gt_labels = self._evaluate(test_dataset)
         # normed to [0,1)
         an_scores = (an_scores - np.amin(an_scores)) / (np.amax(an_scores) -
                                                         np.amin(an_scores))
-        for i, score in enumerate(an_scores):
-            print("Showing anomaly score//expected y for test dataset\n")
-            print("{}//{} - ".format(score, gt_labels[i]))
+        if show:
+            for i, score in enumerate(an_scores):
+                print("Showing anomaly score//expected y for test dataset\n")
+                print("{}//{} - ".format(score, gt_labels[i]))
         # AUC
         auc_dict = metrics.roc_auc(gt_labels, an_scores)
         ret_dict.update(auc_dict)
@@ -308,11 +309,12 @@ class GANomaly(GANRunner):
     def evaluate_best(self, test_dataset):
         # TODO: update so it loads the best available model, it must have been previously saved, which is not working now
         # self.load_best()
-        an_scores, gt_labels = self._evaluate(test_dataset)
+        dict_ = self.evaluate(test_dataset, True)
+        # an_scores, gt_labels = self._evaluate(test_dataset)
         # AUC
-        _ = metrics.roc_auc(gt_labels, an_scores, show=True)
+        # _ = metrics.roc_auc(gt_labels, an_scores, show=True)
         # Average Precision
-        _ = metrics.pre_rec_curve(gt_labels, an_scores, show=True)
+        # _ = metrics.pre_rec_curve(gt_labels, an_scores, show=True)
 
     @tf.function
     def _train_step_autograph(self, x):
