@@ -136,6 +136,11 @@ def main(_):
         opt.batch_size, drop_remainder=True)
     test_dataset = test_dataset.batch(opt.batch_size, drop_remainder=False)
 
+    X_train_be_te = X_train_be.iloc[0:10001]
+    y_train_be_te = y_train_be.iloc[0:10001]
+    test_dataset_be = tf.data.Dataset.from_tensor_slices((X_train_be_te, y_train_be_te))
+    test_dataset_be = test_dataset_be.batch(opt.batch_size, drop_remainder=False)
+
     # training
     ganomaly = GANomaly(opt,
                         train_dataset,
@@ -145,7 +150,7 @@ def main(_):
 
     # evaluating
     # TODO: now testing with benign traffic
-    ganomaly.evaluate_best(train_dataset.iloc[0:10001])
+    ganomaly.evaluate_best(test_dataset_be)
 
 '''
 def main(_):
