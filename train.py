@@ -20,7 +20,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_integer("shuffle_buffer_size", 10000,
                      "buffer size for pseudo shuffle")
 flags.DEFINE_integer("batch_size", 300, "batch_size")
-flags.DEFINE_integer("isize", 78, "input size")
+flags.DEFINE_integer("isize", None, "input size")
 flags.DEFINE_string("ckpt_dir", 'ckpt', "checkpoint folder")
 flags.DEFINE_integer("niter", 8, "number of training epochs")
 flags.DEFINE_float("lr", 2e-4, "learning rate")
@@ -115,7 +115,8 @@ def main(_):
     y_train_be = lb.transform(y_train_be[label])
     y_train_at = lb.transform(y_train_at[label])
     y_train_be_te = lb.transform(y_train_be_te[label])
-    print("Label for attack: " + str(y_train_at.loc[0][label]))
+    print("Label for attack: " + str(y_train_at[0]))
+    print("Label for benign: " + str(y_train_be[0]))
 
     train_dataset = tf.data.Dataset.from_tensor_slices((X_train_be, y_train_be))
     test_dataset = tf.data.Dataset.from_tensor_slices((X_train_at, y_train_at))
