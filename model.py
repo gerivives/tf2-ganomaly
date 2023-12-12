@@ -294,6 +294,9 @@ class GANomaly(GANRunner):
         # normed to [0,1)
         an_scores = (an_scores - np.amin(an_scores)) / (np.amax(an_scores) -
                                                         np.amin(an_scores))
+        for i, score in enumerate(an_scores):
+            print("Showing anomaly score//expected y for test dataset\n")
+            print("{}//{} - ".format(score, gt_labels[i]))
         # AUC
         auc_dict = metrics.roc_auc(gt_labels, an_scores)
         ret_dict.update(auc_dict)
