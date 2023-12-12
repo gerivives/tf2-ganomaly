@@ -117,7 +117,7 @@ def main(_):
     # One-hot encode the test labels
     y_train_be = lb.transform(y_train_be[label])
     y_train_at = lb.transform(y_train_at[label])
-    # y_train_be_te = lb.transform(y_train_be_te[label])
+    y_train_be_te = lb.transform(y_train_be_te[label])
 
     train_dataset = tf.data.Dataset.from_tensor_slices((X_train_be, y_train_be))
     test_dataset = tf.data.Dataset.from_tensor_slices((X_train_at, y_train_at))
@@ -137,62 +137,7 @@ def main(_):
     # evaluating
     # TODO: now testing with benign traffic
     ganomaly.evaluate_best(test_dataset_be)
-
-'''
-def main(_):
-    opt = FLAGS
-    # logging
-    logging.set_verbosity(logging.INFO)
-    logging.set_stderrthreshold(logging.INFO)
-    if FLAGS.log_dir:
-        if not os.path.exists(FLAGS.log_dir):
-            os.makedirs(FLAGS.log_dir)
-        logging.get_absl_handler().use_absl_log_file(FLAGS.dataset, log_dir=FLAGS.log_dir)
-    # dataset
-    if opt.dataset=='mnist':
-        data_train, data_test = tf.keras.datasets.mnist.load_data()
-    elif opt.dataset=='cifar10':
-        data_train, data_test = tf.keras.datasets.cifar10.load_data()
-    else:
-        raise NotImplementError
-    x_train, y_train = data_train
-    x_test, y_test = data_test
-    x_train = x_train.astype(np.float32)
-    x_test = x_test.astype(np.float32)
-    y_train = y_train.reshape([-1,])
-    y_test = y_test.reshape([-1,])
-    # resize to (32, 32)
-    if opt.dataset=='mnist':
-        x_train = batch_resize(x_train, (32, 32))[..., None]
-        x_test = batch_resize(x_test, (32, 32))[..., None]
-    # normalization
-    mean = x_train.mean()
-    stddev = x_train.std()
-    x_train = (x_train - mean) / stddev
-    x_test = (x_test - mean) / stddev
-    logging.info('{}, {}'.format(x_train.shape, x_test.shape))
-    # define abnoraml data and normal
-    # training data only contains normal
-    x_train = x_train[y_train != opt.anomaly, ...]
-    y_train = y_train[y_train != opt.anomaly, ...]
-    y_test = (y_test == opt.anomaly).astype(np.float32)
-    # tf.data.Dataset
-    train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
-    test_dataset = tf.data.Dataset.from_tensor_slices((x_test, y_test))
-    train_dataset = train_dataset.shuffle(opt.shuffle_buffer_size).batch(
-        opt.batch_size, drop_remainder=True)
-    test_dataset = test_dataset.batch(opt.batch_size, drop_remainder=False)
-
-    # training
-    ganomaly = GANomaly(opt,
-                        train_dataset,
-                        valid_dataset=None,
-                        test_dataset=test_dataset)
-    ganomaly.fit(opt.niter)
-
-    # evaluating
-    ganomaly.evaluate_best(test_dataset)
-'''
+    ganomaly.evaluate_best(test_dataset_be)
 
 if __name__ == '__main__':
     app.run(main)

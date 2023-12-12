@@ -195,7 +195,7 @@ class GANRunner:
 
             # evaluate on test_dataset
             if self.test_dataset is not None:
-                dict_ = self.evaluate(self.test_dataset, False)
+                dict_ = self.evaluate(self.test_dataset, True)
                 log_str = '\t Testing:'
                 for k, v in dict_.items():
                     log_str = log_str + '   {}: {:.4f}'.format(k, v)
@@ -295,8 +295,8 @@ class GANomaly(GANRunner):
         an_scores = (an_scores - np.amin(an_scores)) / (np.amax(an_scores) -
                                                         np.amin(an_scores))
         if show:
+            print("Showing anomaly score//expected y \n")
             for i, score in enumerate(an_scores):
-                print("Showing anomaly score//expected y for test dataset\n")
                 print("{}//{} - ".format(score, gt_labels[i]))
 
         # AUC
