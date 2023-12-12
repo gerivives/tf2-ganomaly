@@ -306,7 +306,8 @@ class GANomaly(GANRunner):
         return ret_dict
 
     def evaluate_best(self, test_dataset):
-        self.load_best()
+        # TODO: update so it loads the best available model, it must have been previously saved, which is not working now
+        # self.load_best()
         an_scores, gt_labels = self._evaluate(test_dataset)
         # AUC
         _ = metrics.roc_auc(gt_labels, an_scores, show=True)

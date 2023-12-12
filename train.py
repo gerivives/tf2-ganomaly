@@ -144,7 +144,8 @@ def main(_):
     ganomaly.fit(opt.niter)
 
     # evaluating
-    ganomaly.evaluate_best(test_dataset)
+    # TODO: now testing with benign traffic
+    ganomaly.evaluate_best(train_dataset.iloc[0:10001])
 
 '''
 def main(_):
