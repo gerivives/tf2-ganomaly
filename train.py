@@ -110,7 +110,7 @@ def main(_):
     # Initialize the binarizer with the known classes
     lb = LabelBinarizer()
     lb.fit(labels)
-    print(lb.classes_)
+    print("Label for attack: " + str(y_train_at.loc[0][label]))
 
     # One-hot encode the test labels
     y_train_be = lb.transform(y_train_be[label])
@@ -127,15 +127,13 @@ def main(_):
 
     # training
     ganomaly = GANomaly(opt,
-                        train_dataset,
-                        valid_dataset=None,
+                        train_dataset=train_dataset,
                         test_dataset=test_dataset)
     ganomaly.fit(opt.niter)
 
     # evaluating
-    # TODO: now testing with benign traffic
     ganomaly.evaluate_best(test_dataset_be)
-    ganomaly.evaluate_best(test_dataset_be)
+    ganomaly.evaluate_best(test_dataset)
 
 if __name__ == '__main__':
     app.run(main)

@@ -195,7 +195,7 @@ class GANRunner:
 
             # evaluate on test_dataset
             if self.test_dataset is not None:
-                dict_ = self.evaluate(self.test_dataset, True)
+                dict_ = self.evaluate(self.test_dataset, False)
                 log_str = '\t Testing:'
                 for k, v in dict_.items():
                     log_str = log_str + '   {}: {:.4f}'.format(k, v)
