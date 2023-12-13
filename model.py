@@ -311,11 +311,11 @@ class GANomaly(GANRunner):
         # TODO: update so it loads the best available model, it must have been previously saved, which is not working now
         # self.load_best()
         dict_ = self.evaluate(test_dataset, True)
-        # an_scores, gt_labels = self._evaluate(test_dataset)
+        an_scores, gt_labels = self._evaluate(test_dataset)
         # AUC
-        # _ = metrics.roc_auc(gt_labels, an_scores, show=True)
+        _ = metrics.roc_auc(gt_labels, an_scores, show=True)
         # Average Precision
-        # _ = metrics.pre_rec_curve(gt_labels, an_scores, show=True)
+        _ = metrics.pre_rec_curve(gt_labels, an_scores, show=True)
 
     @tf.function
     def _train_step_autograph(self, x):
