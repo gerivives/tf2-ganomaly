@@ -65,7 +65,7 @@ class DenseDecoder(tf.keras.layers.Layer):
             self.body_blocks.append(tf.keras.layers.Dense(cur_dim, activation=hidden_activation))
             self.body_blocks.append(tf.keras.layers.Dropout(p_dropout))
 
-        self.out_block = tf.keras.layers.Dense(isize, activation=hidden_activation)
+        self.out_block = tf.keras.layers.Dense(isize, activation="tanh")
 
     def call(self, x):
         x = self.in_block(x)
@@ -78,7 +78,7 @@ class DenseDecoder(tf.keras.layers.Layer):
 class NetG(tf.keras.Model):
     def __init__(self, opt):
         super(NetG, self).__init__()
-        layers_dims = [256, 128, 64, 32, 10]
+        layers_dims = [256, 128, 64, 32, 15]
         self.encoder1 = DenseEncoder(layer_dims=layers_dims)
         self.decoder = DenseDecoder(opt.isize, layer_dims=list(reversed(layers_dims)))
         self.encoder2 = DenseEncoder(layer_dims=layers_dims)
@@ -237,10 +237,10 @@ class GANomaly(GANRunner):
         self.D.save_weights(self.D_init_w_path)
 
         # label
-        self.real_label = tf.ones([
+        self.real_label = tf.zeros([
             self.opt.batch_size,
         ], dtype=tf.float32)
-        self.fake_label = tf.zeros([
+        self.fake_label = tf.ones([
             self.opt.batch_size,
         ], dtype=tf.float32)
 
