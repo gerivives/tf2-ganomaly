@@ -4,8 +4,7 @@ from inspect import signature
 from scipy.optimize import brentq
 import matplotlib.pyplot as plt
 
-
-def roc_auc(labels, scores, show=False):
+def roc_auc(labels, scores, save_path, show=False):
     """Compute ROC curve and ROC area for each class"""
     # True/False Positive Rates.
     fpr, tpr, _ = roc_curve(labels, scores)
@@ -28,12 +27,12 @@ def roc_auc(labels, scores, show=False):
         plt.ylabel('True Positive Rate')
         plt.title('Receiver operating characteristic')
         plt.legend(loc="lower right")
-        plt.savefig("roc_auc.png")
+        plt.savefig(save_path + "roc_auc.png")
 #         plt.close()
     return {'roc_auc': roc_auc}
 
 
-def pre_rec_curve(labels, scores, show=False):
+def pre_rec_curve(labels, scores, save_path, show=False):
     average_precision = average_precision_score(labels, scores)
     # In matplotlib < 1.5, plt.fill_between does not have a 'step' argument
     if show:
@@ -55,6 +54,6 @@ def pre_rec_curve(labels, scores, show=False):
         plt.xlim([0.0, 1.0])
         plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
             average_precision))
-        plt.savefig("pre_rec_curve.png")
+        plt.savefig(save_path, "pre_rec_curve.png")
 #         plt.close()
     return {'average_precision': average_precision}

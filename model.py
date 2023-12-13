@@ -300,9 +300,9 @@ class GANomaly(GANRunner):
         _ = self.evaluate(test_dataset)
         an_scores, gt_labels = self._evaluate(test_dataset)
         # AUC
-        _ = metrics.roc_auc(gt_labels, an_scores, show=True)
+        _ = metrics.roc_auc(gt_labels, an_scores, self.save_path, show=True)
         # Average Precision
-        _ = metrics.pre_rec_curve(gt_labels, an_scores, show=True)
+        _ = metrics.pre_rec_curve(gt_labels, an_scores, self.save_path, show=True)
 
     @tf.function
     def _train_step_autograph(self, x):
