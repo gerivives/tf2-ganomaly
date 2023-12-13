@@ -54,6 +54,6 @@ def pre_rec_curve(labels, scores, save_path, show=False):
         plt.xlim([0.0, 1.0])
         plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
             average_precision))
-        plt.savefig(save_path, "pre_rec_curve.png")
+        plt.savefig(save_path + "pre_rec_curve.png")
 #         plt.close()
     return {'average_precision': average_precision}

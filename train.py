@@ -22,7 +22,7 @@ flags.DEFINE_integer("shuffle_buffer_size", 10000,
 flags.DEFINE_integer("batch_size", 300, "batch_size")
 flags.DEFINE_integer("isize", None, "input size")
 flags.DEFINE_string("ckpt_dir", './results/', "checkpoint folder")
-flags.DEFINE_integer("niter", 5, "number of training epochs")
+flags.DEFINE_integer("niter", 6, "number of training epochs")
 flags.DEFINE_float("lr", 2e-4, "learning rate")
 flags.DEFINE_float("w_adv", 1., "Adversarial loss weight")
 flags.DEFINE_float("w_con", 50., "Reconstruction loss weight")
@@ -81,7 +81,7 @@ def main(_):
     frames = frames[~frames[label].isin(classes_drop)]
     labels = sorted(frames[label].unique().tolist())
     print(frames[label].value_counts())
-    print(labels)
+    print('Final labels used: ' + ', '.join(labels))
 
     X = frames.drop(label, axis=1)
     y = frames[label].to_frame()
@@ -111,8 +111,6 @@ def main(_):
     y_train_be = lb.transform(y_train_be[label])
     y_train_at = lb.transform(y_train_at[label])
     y_test = lb.transform(y_test[label])
-    print("Label for attack: " + str(y_train_at[0]))
-    print("Label for benign: " + str(y_train_be[0]))
 
     train_dataset = tf.data.Dataset.from_tensor_slices((X_train_be, y_train_be))
     test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
