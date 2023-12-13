@@ -19,12 +19,12 @@ DATASET_EXTENSION = '.csv'
 FLAGS = flags.FLAGS
 flags.DEFINE_integer("shuffle_buffer_size", 10000,
                      "buffer size for pseudo shuffle")
-flags.DEFINE_integer("batch_size", 256, "batch_size")
+flags.DEFINE_integer("batch_size", 64, "batch_size")
 flags.DEFINE_integer("isize", None, "input size")
 flags.DEFINE_string("ckpt_dir", './results/', "checkpoint folder")
 flags.DEFINE_integer("niter", 6, "number of training epochs")
 flags.DEFINE_float("lr", 1e-3, "learning rate")
-flags.DEFINE_float("w_adv", 50., "Adversarial loss weight")
+flags.DEFINE_float("w_adv", 1., "Adversarial loss weight")
 flags.DEFINE_float("w_con", 50., "Reconstruction loss weight")
 flags.DEFINE_float("w_enc", 1., "Encoder loss weight")
 flags.DEFINE_float("beta1", 0.5, "beta1 for Adam optimizer")

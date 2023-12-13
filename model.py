@@ -99,7 +99,7 @@ class NetD(tf.keras.Model):
     """
     def __init__(self, opt):
         super(NetD, self).__init__()
-        layer_dims = [256, 128, 64, 32, 16]
+        layer_dims = [1024, 512, 256, 128, 64, 32, 16]
 
         self.encoder = DenseEncoder(layer_dims=layer_dims, out_size=1, output_features=True)
         self.sigmoid = layers.Activation(tf.sigmoid)
