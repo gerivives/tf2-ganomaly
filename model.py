@@ -288,10 +288,10 @@ class GANomaly(GANRunner):
                                                         np.amin(an_scores))
 
         # AUC
-        auc_dict = metrics.roc_auc(gt_labels, an_scores)
+        auc_dict = metrics.roc_auc(gt_labels, an_scores, self.save_path)
         ret_dict.update(auc_dict)
         # Average Precision
-        p_r_dict = metrics.pre_rec_curve(gt_labels, an_scores)
+        p_r_dict = metrics.pre_rec_curve(gt_labels, an_scores, self.save_path)
         ret_dict.update(p_r_dict)
         return ret_dict
 

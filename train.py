@@ -1,5 +1,5 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # '2' WARNINGS and INFO messages are not printed
 import tensorflow as tf
 print(tf.__version__)
 import numpy as np
