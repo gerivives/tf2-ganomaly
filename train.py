@@ -93,7 +93,6 @@ def main(_):
     X_test[features] = scaler.transform(X_test[features])
 
     indices_to_remove = y_train[y_train[label] == 'attack'].index
-    print('Indices to remove train: ' + str(len(indices_to_remove)))
     X_train_be = X_train.drop(indices_to_remove)
     y_train_be = y_train.drop(indices_to_remove)
     X_train_be.reset_index(drop=True, inplace=True)
