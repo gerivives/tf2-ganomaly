@@ -65,7 +65,7 @@ class DenseDecoder(tf.keras.layers.Layer):
             self.body_blocks.append(tf.keras.layers.Dense(cur_dim, activation=hidden_activation))
             self.body_blocks.append(tf.keras.layers.Dropout(p_dropout))
 
-        self.out_block = tf.keras.layers.Dense(isize, activation="tanh")
+        self.out_block = tf.keras.layers.Dense(isize, activation=hidden_activation)
 
     def call(self, x):
         x = self.in_block(x)
