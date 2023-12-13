@@ -78,7 +78,7 @@ class DenseDecoder(tf.keras.layers.Layer):
 class NetG(tf.keras.Model):
     def __init__(self, opt):
         super(NetG, self).__init__()
-        layers_dims = [512, 256, 128, 64, 32, 20]
+        layers_dims = [256, 128, 64, 32, 15]
         self.encoder1 = DenseEncoder(layer_dims=layers_dims)
         self.decoder = DenseDecoder(opt.isize, layer_dims=list(reversed(layers_dims)))
         self.encoder2 = DenseEncoder(layer_dims=layers_dims)
@@ -99,7 +99,7 @@ class NetD(tf.keras.Model):
     """
     def __init__(self, opt):
         super(NetD, self).__init__()
-        layer_dims = [512, 256, 128, 64, 32, 16]
+        layer_dims = [256, 128, 64, 32, 16]
 
         self.encoder = DenseEncoder(layer_dims=layer_dims, out_size=1, output_features=True)
         self.sigmoid = layers.Activation(tf.sigmoid)
