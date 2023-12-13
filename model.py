@@ -36,7 +36,6 @@ class DenseEncoder(tf.keras.layers.Layer):
             self.out_act = tf.keras.layers.Dense(layer_dims[-1])
 
     def call(self, x):
-        # print(x.shape)
         x = self.in_block(x)
         for block in self.body_blocks:
             x = block(x)
@@ -80,18 +79,14 @@ class NetG(tf.keras.Model):
     def __init__(self, opt):
         super(NetG, self).__init__()
         layers_dims = [512, 256, 128, 64, 32, 20]
-        # Use the dense encoder-decoder pair when the dimensions are given
         self.encoder1 = DenseEncoder(layer_dims=layers_dims)
         self.decoder = DenseDecoder(opt.isize, layer_dims=list(reversed(layers_dims)))
         self.encoder2 = DenseEncoder(layer_dims=layers_dims)
 
     def call(self, x):
         latent_i = self.encoder1(x)
-        # print('Output from Generator (Encoder1): ' + str(latent_i.shape))
         gen_img = self.decoder(latent_i)
-        # print('Output from Generator (Decoder): ' + str(gen_img.shape))
         latent_o = self.encoder2(gen_img)
-        # print('Output from Generator (Encoder2): ' + str(latent_o.shape))
         return latent_i, gen_img, latent_o
 
     def num_params(self):
@@ -106,15 +101,12 @@ class NetD(tf.keras.Model):
         super(NetD, self).__init__()
         layer_dims = [512, 256, 128, 64, 32, 16]
 
-        # Use the dense encoder when the dimensions are given
         self.encoder = DenseEncoder(layer_dims=layer_dims, out_size=1, output_features=True)
         self.sigmoid = layers.Activation(tf.sigmoid)
 
     def call(self, x):
         output, last_features = self.encoder(x)
-        # print('Output from Discriminator (Encoder): ' + str(output.shape))
         output = self.sigmoid(output)
-        # print('Output from Discriminator (Sigmoid): ' + str(output.shape))
         return output, last_features
 
 
@@ -166,7 +158,6 @@ class GANRunner:
             with tqdm(total=self.num_ele_train, leave=False) as pbar:
                 for step, (x_batch_train,
                            y_batch_train) in enumerate(self.train_dataset):
-                    # print('Shape training data from csv: ' + str(x_batch_train.shape))
                     loss = self.train_step(x_batch_train, y_batch_train)
                     G_losses.append(loss[0].numpy())
                     D_losses.append(loss[1].numpy())
@@ -199,12 +190,15 @@ class GANRunner:
                 log_str = '\t Testing:'
                 for k, v in dict_.items():
                     log_str = log_str + '   {}: {:.4f}'.format(k, v)
+                self.save(self.save_path)
+                '''
                 state_value = dict_[self.best_state_key]
                 self.best_state = self.best_state_policy(
                     self.best_state, state_value)
                 if self.best_state == state_value:
                     log_str = '*** ' + log_str + ' ***'
                     self.save_best()
+                '''
                 logging.info(log_str)
 
     def save(self, path):
@@ -238,8 +232,6 @@ class GANomaly(GANRunner):
                                        train_dataset=train_dataset,
                                        valid_dataset=valid_dataset,
                                        test_dataset=test_dataset)
-        # TODO: potential issue found here regarding the shape of the Layers
-        # Before we had this: self.D(tf.keras.Input(shape=[opt.isize] if opt.encdims else [opt.isize, opt.isize, opt.nc]))
         self.D(tf.keras.Input(shape=[opt.isize]))
         self.D_init_w_path = '/tmp/D_init'
         self.D.save_weights(self.D_init_w_path)
@@ -308,8 +300,7 @@ class GANomaly(GANRunner):
         return ret_dict
 
     def evaluate_best(self, test_dataset):
-        # TODO: update so it loads the best available model, it must have been previously saved, which is not working now
-        # self.load_best()
+        self.load(self.save_path)
         _ = self.evaluate(test_dataset, False)
         an_scores, gt_labels = self._evaluate(test_dataset)
         # AUC
@@ -323,11 +314,8 @@ class GANomaly(GANRunner):
         """
         self.input = x
         with tf.GradientTape() as g_tape, tf.GradientTape() as d_tape:
-            # print('Generator: next. Shape data: ' + str(self.input.shape))
             self.latent_i, self.gen_img, self.latent_o = self.G(self.input)
-            # print('Discriminator: next checking real. Shape data: ' + str(self.input.shape))
             self.pred_real, self.feat_real = self.D(self.input)
-            # print('Discriminator: next checking generated (fake). Shape data: ' + str(self.gen_img.shape))
             self.pred_fake, self.feat_fake = self.D(self.gen_img)
             g_loss = self.g_loss()
             d_loss = self.d_loss()
