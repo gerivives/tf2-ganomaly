@@ -91,6 +91,10 @@ def main(_):
     scaler = MinMaxScaler()
     X_train[features] = scaler.fit_transform(X_train[features])
     X_test[features] = scaler.transform(X_test[features])
+    X_train.reset_index(drop=True, inplace=True)
+    y_train.reset_index(drop=True, inplace=True)
+    X_test.reset_index(drop=True, inplace=True)
+    y_test.reset_index(drop=True, inplace=True)
 
     indices_to_remove = y_train[y_train[label] == 'attack'].index
     X_train_be = X_train.drop(indices_to_remove)
