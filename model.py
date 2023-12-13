@@ -186,7 +186,7 @@ class GANRunner:
 
             # evaluate on test_dataset
             if self.test_dataset is not None:
-                dict_ = self.evaluate(self.test_dataset, False)
+                dict_ = self.evaluate(self.test_dataset)
                 log_str = '\t Testing:'
                 for k, v in dict_.items():
                     log_str = log_str + '   {}: {:.4f}'.format(k, v)
@@ -280,16 +280,12 @@ class GANomaly(GANRunner):
         gt_labels = np.concatenate(gt_labels, axis=0).reshape([-1])
         return an_scores, gt_labels
 
-    def evaluate(self, test_dataset, show):
+    def evaluate(self, test_dataset):
         ret_dict = {}
         an_scores, gt_labels = self._evaluate(test_dataset)
         # normed to [0,1)
         an_scores = (an_scores - np.amin(an_scores)) / (np.amax(an_scores) -
                                                         np.amin(an_scores))
-        if show:
-            print("Showing anomaly score//expected y \n")
-            for i, score in enumerate(an_scores):
-                print("{}//{} - ".format(score, gt_labels[i]))
 
         # AUC
         auc_dict = metrics.roc_auc(gt_labels, an_scores)
@@ -301,7 +297,7 @@ class GANomaly(GANRunner):
 
     def evaluate_best(self, test_dataset):
         self.load(self.save_path)
-        _ = self.evaluate(test_dataset, False)
+        _ = self.evaluate(test_dataset)
         an_scores, gt_labels = self._evaluate(test_dataset)
         # AUC
         _ = metrics.roc_auc(gt_labels, an_scores, show=True)
