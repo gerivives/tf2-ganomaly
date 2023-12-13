@@ -22,7 +22,7 @@ flags.DEFINE_integer("shuffle_buffer_size", 10000,
 flags.DEFINE_integer("batch_size", 300, "batch_size")
 flags.DEFINE_integer("isize", None, "input size")
 flags.DEFINE_string("ckpt_dir", 'ckpt', "checkpoint folder")
-flags.DEFINE_integer("niter", 15, "number of training epochs")
+flags.DEFINE_integer("niter", 6, "number of training epochs")
 flags.DEFINE_float("lr", 2e-4, "learning rate")
 flags.DEFINE_float("w_adv", 1., "Adversarial loss weight")
 flags.DEFINE_float("w_con", 50., "Reconstruction loss weight")
