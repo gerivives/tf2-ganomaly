@@ -13,8 +13,8 @@ from absl import app
 from absl import flags
 from absl import logging
 
-# DATASET_PATH = '../datasets/MachineLearningCVE/'
-DATASET_PATH = '../datasets/IDS-2017/'
+DATASET_PATH = '../datasets/MachineLearningCVE/'
+# DATASET_PATH = '../datasets/IDS-2017/'
 DATASET_EXTENSION = '.csv'
 
 FLAGS = flags.FLAGS
