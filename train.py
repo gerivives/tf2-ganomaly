@@ -54,7 +54,6 @@ def main(_):
     frames = frames.replace([-np.inf, np.inf], np.nan)
     frames = frames.dropna(axis=0)
 
-    '''
     # For MachineLearningCVE dataset
     frames.loc[frames[label] == 'Web Attack � Brute Force', label] = 'Brute Force'
     frames.loc[frames[label] == 'Web Attack � XSS', label] = 'XSS'
@@ -67,6 +66,7 @@ def main(_):
     features_dropped = ['id', 'src_ip', 'src_mac', 'src_oui', 'dst_ip', 'dst_mac', 'dst_oui', 'udps.timestamp',
                         'bidirectional_first_seen_ms', 'bidirectional_last_seen_ms', 'src2dst_first_seen_ms',
                         'src2dst_last_seen_ms']
+    '''
 
     frames = frames.drop(features_dropped, axis=1)
 
