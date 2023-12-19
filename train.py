@@ -64,6 +64,11 @@ def main(_):
     frames.loc[frames[label] == 'Web - Brute force', label] = 'Brute Force'
     frames.loc[frames[label] == 'Web - XSS', label] = 'XSS'
     frames.loc[frames[label] == 'Web - SQL injection', label] = 'Sql Injection'
+    features_dropped = ['id', 'src_ip', 'src_mac', 'src_oui', 'dst_ip', 'dst_mac', 'dst_oui', 'udps.timestamp',
+                        'bidirectional_first_seen_ms', 'bidirectional_last_seen_ms', 'src2dst_first_seen_ms',
+                        'src2dst_last_seen_ms']
+
+    frames = frames.drop(features_dropped, axis=1)
 
     dict_classes = {
         'BENIGN': 'benign',
