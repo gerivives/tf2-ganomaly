@@ -13,7 +13,8 @@ from absl import app
 from absl import flags
 from absl import logging
 
-DATASET_PATH = '../datasets/MachineLearningCVE/'
+# DATASET_PATH = '../datasets/MachineLearningCVE/'
+DATASET_PATH = '../datasets/IDS-2017/'
 DATASET_EXTENSION = '.csv'
 
 FLAGS = flags.FLAGS
@@ -53,9 +54,16 @@ def main(_):
     frames = frames.replace([-np.inf, np.inf], np.nan)
     frames = frames.dropna(axis=0)
 
+    '''
+    # For MachineLearningCVE dataset
     frames.loc[frames[label] == 'Web Attack � Brute Force', label] = 'Brute Force'
     frames.loc[frames[label] == 'Web Attack � XSS', label] = 'XSS'
     frames.loc[frames[label] == 'Web Attack � Sql Injection', label] = 'Sql Injection'
+    '''
+    # For IDS-2017 with features extracted using NFStream
+    frames.loc[frames[label] == 'Web - Brute force', label] = 'Brute Force'
+    frames.loc[frames[label] == 'Web - XSS', label] = 'XSS'
+    frames.loc[frames[label] == 'Web - SQL injection', label] = 'Sql Injection'
 
     dict_classes = {
         'BENIGN': 'benign',
@@ -91,10 +99,6 @@ def main(_):
     scaler = MinMaxScaler()
     X_train[features] = scaler.fit_transform(X_train[features])
     X_test[features] = scaler.transform(X_test[features])
-    X_train.reset_index(drop=True, inplace=True)
-    y_train.reset_index(drop=True, inplace=True)
-    X_test.reset_index(drop=True, inplace=True)
-    y_test.reset_index(drop=True, inplace=True)
 
     indices_to_remove = y_train[y_train[label] == 'attack'].index
     X_train_be = X_train.drop(indices_to_remove)
@@ -112,7 +116,7 @@ def main(_):
 
     # One-hot encode the test labels
     y_train_be = lb.transform(y_train_be[label])
-    y_train_at = lb.transform(y_train_at[label])
+    # y_train_at = lb.transform(y_train_at[label])
     y_test = lb.transform(y_test[label])
 
     train_dataset = tf.data.Dataset.from_tensor_slices((X_train_be, y_train_be))
