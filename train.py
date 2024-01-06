@@ -51,10 +51,10 @@ def main(_):
     print(files)
     sets = [pd.read_csv(DATASET_PATH + file) for file in files]
     frames = pd.concat(sets, axis=0, ignore_index=True)
-    print(frames)
     columns = frames.columns.to_list()
     label = columns[-1]
     frames = frames.replace([-np.inf, np.inf], np.nan)
+    print(frames)
     frames = frames.dropna(axis=0)
 
     columns_to_drop = ["id", "expiration_id", "src_ip", "src_mac", "src_oui", "src_port",
