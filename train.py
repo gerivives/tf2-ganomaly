@@ -54,6 +54,7 @@ def main(_):
     label = columns[-1]
     frames = frames.replace([-np.inf, np.inf], np.nan)
     frames = frames.dropna(axis=0)
+    print(frames)
 
     columns_to_drop = ["id", "expiration_id", "src_ip", "src_mac", "src_oui", "src_port",
     "dst_ip", "dst_mac", "dst_oui", "vlan_id", "tunnel_id", "application_name",
@@ -73,7 +74,6 @@ def main(_):
 
     X = frames.drop(label, axis=1)
     y = frames[label].to_frame()
-
     features = X.columns.to_list()
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=4, stratify=y)
     scaler = MinMaxScaler()
