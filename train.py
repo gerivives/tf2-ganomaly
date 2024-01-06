@@ -48,14 +48,12 @@ def main(_):
         logging.get_absl_handler().use_absl_log_file(FLAGS.dataset, log_dir=FLAGS.log_dir)
 
     files = sorted([k for k in os.listdir(DATASET_PATH) if k.endswith(DATASET_EXTENSION)])
-    print(files)
     sets = [pd.read_csv(DATASET_PATH + file) for file in files]
     frames = pd.concat(sets, axis=0, ignore_index=True)
     columns = frames.columns.to_list()
     label = columns[-1]
-    frames = frames.replace([-np.inf, np.inf], np.nan)
-    frames = frames.dropna(axis=0)
-    print(frames)
+    # frames = frames.replace([-np.inf, np.inf], np.nan)
+    # frames = frames.dropna(axis=0)
 
     columns_to_drop = ["id", "expiration_id", "src_ip", "src_mac", "src_oui", "src_port",
     "dst_ip", "dst_mac", "dst_oui", "vlan_id", "tunnel_id", "application_name",
