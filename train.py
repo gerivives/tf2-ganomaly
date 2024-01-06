@@ -13,8 +13,9 @@ from absl import app
 from absl import flags
 from absl import logging
 
-DATASET_PATH = '../datasets/MachineLearningCVE/'
+# DATASET_PATH = '../datasets/MachineLearningCVE/'
 # DATASET_PATH = '../datasets/IDS-2017/'
+DATASET_PATH = '../datasets/VOIP/'
 DATASET_EXTENSION = '.csv'
 
 FLAGS = flags.FLAGS
@@ -29,12 +30,12 @@ flags.DEFINE_float("w_adv", 1., "Adversarial loss weight")
 flags.DEFINE_float("w_con", 50., "Reconstruction loss weight")
 flags.DEFINE_float("w_enc", 1., "Encoder loss weight")
 flags.DEFINE_float("beta1", 0.5, "beta1 for Adam optimizer")
-flags.DEFINE_string("dataset", 'cic', "name of dataset")
-DATASETS = ['cic']
+flags.DEFINE_string("dataset", 'voip', "name of dataset")
+DATASETS = ['voip']
 flags.register_validator('dataset',
                          lambda name: name in DATASETS,
                          message='--dataset must be {}'.format(DATASETS))
-flags.mark_flag_as_required('isize')
+# flags.mark_flag_as_required('isize')
 
 def main(_):
     opt = FLAGS
@@ -54,43 +55,16 @@ def main(_):
     frames = frames.replace([-np.inf, np.inf], np.nan)
     frames = frames.dropna(axis=0)
 
-    # For MachineLearningCVE dataset
-    frames.loc[frames[label] == 'Web Attack � Brute Force', label] = 'Brute Force'
-    frames.loc[frames[label] == 'Web Attack � XSS', label] = 'XSS'
-    frames.loc[frames[label] == 'Web Attack � Sql Injection', label] = 'Sql Injection'
-    '''
-    # For IDS-2017 with features extracted using NFStream
-    frames.loc[frames[label] == 'Web - Brute force', label] = 'Brute Force'
-    frames.loc[frames[label] == 'Web - XSS', label] = 'XSS'
-    frames.loc[frames[label] == 'Web - SQL injection', label] = 'Sql Injection'
-    features_dropped = ['id', 'src_ip', 'src_mac', 'src_oui', 'dst_ip', 'dst_mac', 'dst_oui', 'udps.timestamp',
-                        'bidirectional_first_seen_ms', 'bidirectional_last_seen_ms', 'src2dst_first_seen_ms',
-                        'src2dst_last_seen_ms']
-    frames = frames.drop(features_dropped, axis=1)
-    '''
+    columns_to_drop = ["id", "expiration_id", "src_ip", "src_mac", "src_oui", "src_port",
+    "dst_ip", "dst_mac", "dst_oui", "vlan_id", "tunnel_id", "application_name",
+    "application_category_name", "application_is_guessed", "application_confidence",
+    "requested_server_name", "client_fingerprint", "server_fingerprint", "user_agent",
+    "content_type", "udps.timestamp"]
+    frames = frames.drop(columns_to_drop, axis=1)
 
-    dict_classes = {
-        'BENIGN': 'benign',
-        'DoS Hulk': 'dropped',
-        'PortScan': 'attack',
-        'DDoS': 'dropped',
-        'DoS GoldenEye': 'dropped',
-        'FTP-Patator': 'dropped',
-        'SSH-Patator': 'dropped',
-        'DoS slowloris': 'dropped',
-        'DoS Slowhttptest': 'dropped',
-        'Bot': 'dropped',
-        'Brute Force': 'dropped',
-        'XSS': 'dropped',
-        'Infiltration': 'dropped',
-        'Sql Injection': 'dropped',
-        'Heartbleed': 'dropped'
-    }
+    columns = frames.columns.to_list()
+    FLAGS.isize = len(columns)-1
 
-    new_label = [dict_classes[i] if i in dict_classes else i for i in frames[label]]
-    frames.loc[:, label] = new_label
-    classes_drop = ['dropped']
-    frames = frames[~frames[label].isin(classes_drop)]
     labels = sorted(frames[label].unique().tolist())
     print(frames[label].value_counts())
     print('Final labels used: ' + ', '.join(labels))
