@@ -48,6 +48,7 @@ def main(_):
         logging.get_absl_handler().use_absl_log_file(FLAGS.dataset, log_dir=FLAGS.log_dir)
 
     files = sorted([k for k in os.listdir(DATASET_PATH) if k.endswith(DATASET_EXTENSION)])
+    print(files)
     sets = [pd.read_csv(DATASET_PATH + file) for file in files]
     frames = pd.concat(sets, axis=0, ignore_index=True)
     columns = frames.columns.to_list()
