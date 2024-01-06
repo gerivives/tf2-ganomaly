@@ -67,8 +67,8 @@ def main(_):
     print("The number of columns is: " + str(len(columns)-1))
     print("The label is: " + label)
     labels = sorted(frames[label].unique().tolist())
-    print(frames[label].value_counts())
     print('Final labels used: ' + ', '.join(labels))
+    print(frames[label].value_counts())
 
     X = frames.drop(label, axis=1)
     y = frames[label].to_frame()
