@@ -54,8 +54,8 @@ def main(_):
     columns = frames.columns.to_list()
     label = columns[-1]
     frames = frames.replace([-np.inf, np.inf], np.nan)
-    print(frames)
     frames = frames.dropna(axis=0)
+    print(frames)
 
     columns_to_drop = ["id", "expiration_id", "src_ip", "src_mac", "src_oui", "src_port",
     "dst_ip", "dst_mac", "dst_oui", "vlan_id", "tunnel_id", "application_name",
