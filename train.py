@@ -66,6 +66,7 @@ def main(_):
     FLAGS.isize = len(columns)-1
     print("The number of columns is: " + str(len(columns)-1))
     print("The label is: " + label)
+    print(frames)
     labels = sorted(frames[label].unique().tolist())
     print('Final labels used: ' + ', '.join(labels))
     print(frames[label].value_counts())
